@@ -32,7 +32,6 @@ class Game extends React.Component {
   handleClick(i) {
     const { dispatch } = this.props;
     const newXIsNext = this.props.xIsNext;
-    console.log(this.props)
     const history = this.props.history.slice(0, this.props.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
@@ -41,7 +40,10 @@ class Game extends React.Component {
     }
     squares[i] = newXIsNext ? 'X' : 'O';
     const xIsNext = !newXIsNext;
+    console.log(history);
+    console.log(this.props.history);
     const action = {
+      history: history,
       type: 'UPDATE_HISTORY',
       squares: squares,
       stepNumber: history.length,
@@ -52,12 +54,15 @@ class Game extends React.Component {
 
 
   jumpTo(step) {
-    const stepNumber = step;
-    const xIsNext = (step % 2) === 0;
+    const { dispatch } = this.props;
     const action = {
       type: 'JUMP_TO_STEP',
-      step: step
-    }
+      stepNumber: step,
+      xIsNext: (step % 2) === 0
+    };
+
+    dispatch(action);
+
   }
 
 
@@ -72,7 +77,6 @@ class Game extends React.Component {
         'Go to game start';
       return (
         <li key={move}>
-
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
         </li>
       );
