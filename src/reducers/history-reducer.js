@@ -1,6 +1,6 @@
 export default (state = {history: [{
   squares: Array(9).fill(null),
-}], xIsNext: false, stepNumber: 1}, action) => {
+}], xIsNext: false, stepNumber: 0}, action) => {
 
   let newState;
   const { squares, stepNumber, xIsNext } = action;
@@ -12,9 +12,13 @@ export default (state = {history: [{
         squares: squares
       }
     });
+
+    console.log(newHistory);
+
     newState = Object.assign({}, state, {
         history: newHistory,
-        xIsNext: xIsNext
+        xIsNext: xIsNext,
+        stepNumber: stepNumber
     });
 
     return newState;

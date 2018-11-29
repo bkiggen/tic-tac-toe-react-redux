@@ -7,9 +7,6 @@ import { connect } from 'react-redux';
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      stepNumber: 0,
-    };
   }
 
   calculateWinner(squares) {
@@ -35,8 +32,8 @@ class Game extends React.Component {
   handleClick(i) {
     const { dispatch } = this.props;
     const newXIsNext = this.props.xIsNext;
-    const history = this.props.history.slice(0, this.state.stepNumber + 1);
-    const stepNumber = this.state.stepNumber;
+    console.log(this.props)
+    const history = this.props.history.slice(0, this.props.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
     if (this.calculateWinner(squares) || squares[i]) {
@@ -47,11 +44,10 @@ class Game extends React.Component {
     const action = {
       type: 'UPDATE_HISTORY',
       squares: squares,
-      stepNumber: stepNumber,
+      stepNumber: history.length,
       xIsNext: xIsNext
     };
     dispatch(action);
-
   }
 
 
@@ -67,7 +63,7 @@ class Game extends React.Component {
 
   render() {
     const history = this.props.history;
-    const current = history[this.state.stepNumber];
+    const current = history[this.props.stepNumber];
     const winner = this.calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
@@ -113,7 +109,8 @@ class Game extends React.Component {
 const mapStateToProps = state => {
   return {
     history: state.history,
-    xIsNext: state.xIsNext
+    xIsNext: state.xIsNext,
+    stepNumber: state.stepNumber
   };
 };
 

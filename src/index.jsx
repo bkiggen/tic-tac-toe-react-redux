@@ -7,7 +7,6 @@ import { createStore } from 'redux';
 import historyReducer from './reducers/history-reducer';
 
 const store = createStore(historyReducer);
-console.log(store.getState());
 
 
 const render = (Component) => {
