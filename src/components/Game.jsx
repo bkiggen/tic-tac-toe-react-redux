@@ -1,17 +1,14 @@
 import React from 'react';
 import Board from './Board';
 import './../index.css';
+import { connect } from 'react-redux';
 
 
 class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      history: [{
-        squares: Array(9).fill(null),
-      }],
       stepNumber: 0,
-      xIsNext: true,
     };
   }
 
@@ -36,31 +33,40 @@ class Game extends React.Component {
   }
 
   handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
+    const { dispatch } = this.props;
+    const newXIsNext = this.props.xIsNext;
+    const history = this.props.history.slice(0, this.state.stepNumber + 1);
+    const stepNumber = this.state.stepNumber;
     const current = history[history.length - 1];
     const squares = current.squares.slice();
     if (this.calculateWinner(squares) || squares[i]) {
       return;
     }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
-    this.setState({
-      history: history.concat([{
-        squares: squares,
-      }]),
-      stepNumber: history.length,
-      xIsNext: !this.state.xIsNext,
-    });
+    squares[i] = newXIsNext ? 'X' : 'O';
+    const xIsNext = !newXIsNext;
+    const action = {
+      type: 'UPDATE_HISTORY',
+      squares: squares,
+      stepNumber: stepNumber,
+      xIsNext: xIsNext
+    };
+    dispatch(action);
+
   }
+
 
   jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0,
-    });
+    const stepNumber = step;
+    const xIsNext = (step % 2) === 0;
+    const action = {
+      type: 'JUMP_TO_STEP',
+      step: step
+    }
   }
 
+
   render() {
-    const history = this.state.history;
+    const history = this.props.history;
     const current = history[this.state.stepNumber];
     const winner = this.calculateWinner(current.squares);
 
@@ -82,7 +88,7 @@ class Game extends React.Component {
       status = 'Winner: ' + winner;
       image = <img src="https://media1.popsugar-assets.com/files/thumbor/VWlpDdHkG9Vv3KucGebNZ7Rmoso/fit-in/1200x630/filters:format_auto-!!-:strip_icc-!!-:fill-!white!-/2015/11/03/052/n/1922283/d4c29d1dfdbe4062_tumblr_m8es1wCwGi1qg39ewo1_500/i/Jack-Frost.gif"/>;
     } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      status = 'Next player: ' + (this.props.xIsNext ? 'X' : 'O');
     }
     return (
       <div>
@@ -104,4 +110,11 @@ class Game extends React.Component {
   }
 }
 
-export default Game;
+const mapStateToProps = state => {
+  return {
+    history: state.history,
+    xIsNext: state.xIsNext
+  };
+};
+
+export default connect(mapStateToProps)(Game);
