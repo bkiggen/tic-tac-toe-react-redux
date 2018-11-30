@@ -7,12 +7,12 @@ export default (state = {history: [{
 
   switch(action.type) {
   case 'UPDATE_HISTORY':
+  console.log(history);
     let newHistory = Object.assign([], history, {
       [stepNumber]: {
         squares: squares
       }
     });
-
 
     newState = Object.assign({}, state, {
       history: newHistory,
